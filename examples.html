@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>示例代码 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="getting_started.html">快速入门</a>
+                <a href="installation.html">安装指南</a>
+                <a href="basic_concepts.html">基本概念</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC语言示例代码</h1>
+        <p>通过实际示例学习BCC语言的使用</p>
+    </div>
+
+    <div class="content">
+        <h2>1. 基础示例</h2>
+        <h3>1.1 数值计算</h3>
+        <pre><code>// 计算斐波那契数列
+def public fibonacci(n) T {
+    if(n <= 1) T {
+        return n
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+// 计算阶乘
+def public factorial(n) T {
+    if(n <= 1) T {
+        return 1
+    }
+    return n * factorial(n - 1)
+}
+
+// 使用示例
+printnln(fibonacci(10))  // 输出: 55
+printnln(factorial(5))   // 输出: 120</code></pre>
+
+        <h3>1.2 字符串处理</h3>
+        <pre><code>// 字符串拼接
+firstName = "John"
+lastName = "Doe"
+fullName = firstName + " " + lastName
+printnln(fullName)  // 输出: John Doe
+
+// 字符串重复
+def public repeat(str, times) T {
+    result = ""
+    for(i = 0, i < times, i = i + 1) T {
+        result = result + str
+    }
+    return result
+}
+
+printnln(repeat("Ha", 3))  // 输出: HaHaHa</code></pre>
+
+        <h2>2. 中级示例</h2>
+        <h3>2.1 数组操作</h3>
+        <pre><code>// 数组排序
+def public bubbleSort(arr) T {
+    n = len(arr)
+    for(i = 0, i < n, i = i + 1) T {
+        for(j = 0, j < n - i - 1, j = j + 1) T {
+            if(arr[j] > arr[j + 1]) T {
+                // 交换元素
+                temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+            }
+        }
+    }
+    return arr
+}
+
+// 使用示例
+numbers = [64, 34, 25, 12, 22, 11, 90]
+sorted = bubbleSort(numbers)
+printnln(sorted)  // 输出: [11, 12, 22, 25, 34, 64, 90]</code></pre>
+
+        <h3>2.2 函数式编程</h3>
+        <pre><code>// 高阶函数示例
+def public map(arr, func: BCC.Codeblock) T {
+    result = []
+    for(i = 0, i < len(arr), i = i + 1) T {
+        nsreturn func(arr[i])
+        result = result + [nsvalue]
+    }
+    return result
+}
+
+// 使用示例
+numbers = [1, 2, 3, 4, 5]
+doubled = map(numbers, { x -> return x * 2 })
+printnln(doubled)  // 输出: [2, 4, 6, 8, 10]</code></pre>
+
+        <h2>3. 高级示例</h2>
+        <h3>3.1 自定义数据结构</h3>
+        <pre><code>// 实现简单的栈
+def public Stack() {
+    items = []
+    
+    def public push(item) {
+        items = items + [item]
+    }
+    
+    def public pop() {
+        if(len(items) == 0) {
+            return null
+        }
+        item = items[len(items) - 1]
+        items = items[0:len(items) - 1]
+        return item
+    }
+    
+    def public peek() {
+        if(len(items) == 0) {
+            return null
+        }
+        return items[len(items) - 1]
+    }
+    
+    def public isEmpty() {
+        return len(items) == 0
+    }
+    
+    return {
+        push: push,
+        pop: pop,
+        peek: peek,
+        isEmpty: isEmpty
+    }
+}
+
+// 使用示例
+stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
+println(stack.pop())   // 输出: 3
+println(stack.peek())  // 输出: 2</code></pre>
+
+        <h3>3.2 异步编程</h3>
+        <pre><code>// 异步任务处理
+def public async(task: BCC.Codeblock) {
+    return {
+        then: { callback: BCC.Codeblock ->
+            result = nsreturn task
+            nsreturn callback(result)
+        }
+    }
+}
+
+// 使用示例
+def public fetchData() {
+    return async() {
+        // 模拟异步操作
+        return "Data fetched"
+    }
+}
+
+fetchData().then() { data ->
+    println(data)  // 输出: Data fetched
+}</code></pre>
+
+        <h2>4. 实际应用示例</h2>
+        <h3>4.1 简单计算器</h3>
+        <pre><code>def public Calculator() {
+    def public add(a, b) { return a + b }
+    def public sub(a, b) { return a - b }
+    def public mul(a, b) { return a * b }
+    def public div(a, b) {
+        if(b == 0) {
+            println("Error: Division by zero")
+            return null
+        }
+        return a / b
+    }
+    
+    return {
+        add: add,
+        sub: sub,
+        mul: mul,
+        div: div
+    }
+}
+
+// 使用示例
+calc = Calculator()
+println(calc.add(5, 3))  // 输出: 8
+println(calc.mul(4, 2))  // 输出: 8
+println(calc.div(9, 3))  // 输出: 3</code></pre>
+
+        <h3>4.2 文件处理</h3>
+        <pre><code>// 简单的文件读写
+def public writeFile(filename, content) {
+    file = open(filename, "w")
+    file.write(content)
+    file.close()
+}
+
+def public readFile(filename) {
+    file = open(filename, "r")
+    content = file.read()
+    file.close()
+    return content
+}
+
+// 使用示例
+writeFile("test.txt", "Hello, BCC!")
+content = readFile("test.txt")
+println(content)  // 输出: Hello, BCC!</code></pre>
+
+        <div class="note">
+            <strong>提示：</strong>
+            <ul>
+                <li>所有示例代码都可以直接复制运行</li>
+                <li>建议先理解代码逻辑再尝试修改和扩展</li>
+                <li>可以在<a href="playground.html">在线编辑器</a>中尝试这些示例</li>
+            </ul>
+        </div>
+
+        <h2>5. 下一步</h2>
+        <p>学习了这些示例后，您可以：</p>
+        <ul>
+            <li>查看<a href="advanced_features.html">高级特性</a>了解更多功能</li>
+            <li>阅读<a href="best_practices.html">最佳实践</a>提高代码质量</li>
+            <li>参考<a href="api_reference.html">API文档</a>了解更多细节</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 

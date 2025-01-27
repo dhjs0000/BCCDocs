@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线编辑器 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .playground {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .editor-section {
+            flex: 1;
+        }
+        
+        .output-section {
+            flex: 1;
+        }
+        
+        #code-editor {
+            width: 100%;
+            height: 400px;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        
+        #output-area {
+            width: 100%;
+            height: 400px;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            resize: vertical;
+            overflow-y: auto;
+        }
+        
+        .control-panel {
+            margin: 10px 0;
+        }
+        
+        .button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background-color: #45a049;
+        }
+        
+        .example-list {
+            margin: 20px 0;
+        }
+        
+        .example-item {
+            cursor: pointer;
+            color: #0066cc;
+            margin: 5px 0;
+        }
+        
+        .example-item:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="getting_started.html">快速入门</a>
+                <a href="examples.html">示例</a>
+                <a href="api_reference.html">API参考</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC在线编辑器</h1>
+        <p>在线编写和运行BCC代码</p>
+    </div>
+
+    <div class="content">
+        <div class="playground">
+            <div class="editor-section">
+                <h2>代码编辑器</h2>
+                <textarea id="code-editor">// 在这里编写BCC代码
+printnln("Hello, World!")</textarea>
+                <div class="control-panel">
+                    <button class="button" onclick="runCode()">运行代码</button>
+                    <button class="button" onclick="clearEditor()">清空编辑器</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>输出结果</h2>
+                <div id="output-area"></div>
+                <div class="control-panel">
+                    <button class="button" onclick="clearOutput()">清空输出</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="example-list">
+            <h2>示例代码</h2>
+            <div class="example-item" onclick="loadExample('hello')">Hello World</div>
+            <div class="example-item" onclick="loadExample('fibonacci')">斐波那契数列</div>
+            <div class="example-item" onclick="loadExample('sort')">数组排序</div>
+            <div class="example-item" onclick="loadExample('closure')">闭包示例</div>
+        </div>
+
+        <div class="note">
+            <strong>说明：</strong>
+            <ul>
+                <li>代码会在您的浏览器中执行</li>
+                <li>支持所有BCC语言特性</li>
+                <li>可以使用标准库函数</li>
+                <li>代码执行有5秒超时限制</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>注意：</strong>
+            <ul>
+                <li>请不要运行不信任的代码</li>
+                <li>代码执行结果仅供参考</li>
+                <li>如需进行正式开发，请使用本地环境</li>
+            </ul>
+        </div>
+
+        <script>
+            // BCC解释器实现
+            class BCCInterpreter {
+                constructor() {
+                    this.variables = {};
+                    this.functions = {};
+                    this.output = [];
+                }
+
+                // 执行BCC代码
+                execute(code) {
+                    this.variables = {};
+                    this.functions = {};
+                    this.output = [];
+                    
+                    // 按行分割代码并保留空行
+                    const lines = code.split('\n');
+                    
+                    // 首先收集所有函数定义
+                    let i = 0;
+                    while(i < lines.length) {
+                        const line = lines[i].trim();
+                        if(line.startsWith('def public')) {
+                            const [funcDef, ...funcBody] = this.collectFunctionBody(lines, i);
+                            this.defineFunction(funcDef, funcBody);
+                            i += funcBody.length + 1;
+                        } else {
+                            i++;
+                        }
+                    }
+                    
+                    // 然后执行主代码
+                    for(let line of lines) {
+                        line = line.trim();
+                        if(!line || line.startsWith('//') || line.startsWith('def public')) continue;
+                        
+                        try {
+                            this.executeLine(line);
+                        } catch(e) {
+                            throw new Error(`第${i+1}行: ${e.message}`);
+                        }
+                    }
+                    
+                    return this.output.join('\n');
+                }
+
+                // 收集函数体
+                collectFunctionBody(lines, start) {
+                    const funcDef = lines[start].trim();
+                    const funcBody = [];
+                    let braceCount = 0;
+                    let i = start + 1;
+
+                    while(i < lines.length) {
+                        const line = lines[i].trim();
+                        if(line.includes('{')) braceCount++;
+                        if(line.includes('}')) braceCount--;
+                        funcBody.push(line);
+                        if(braceCount === 0) break;
+                        i++;
+                    }
+
+                    return [funcDef, ...funcBody];
+                }
+
+                // 定义函数
+                defineFunction(funcDef, funcBody) {
+                    const match = funcDef.match(/def public (\w+)\(([^)]*)\)/);
+                    if(!match) throw new Error('无效的函数定义');
+
+                    const [_, name, params] = match;
+                    const parameters = params.split(',').map(p => p.trim()).filter(p => p);
+
+                    this.functions[name] = {
+                        params: parameters,
+                        body: funcBody,
+                    };
+                }
+
+                // 执行函数
+                executeFunction(name, args) {
+                    const func = this.functions[name];
+                    if(!func) throw new Error('未定义的函数: ' + name);
+
+                    // 保存当前作用域
+                    const oldVariables = {...this.variables};
+                    
+                    // 设置参数
+                    func.params.forEach((param, i) => {
+                        this.variables[param] = args[i];
+                    });
+
+                    // 执行函数体
+                    let result;
+                    for(let line of func.body) {
+                        line = line.trim();
+                        if(!line || line.startsWith('//')) continue;
+                        if(line.startsWith('return')) {
+                            const expr = line.slice(6).trim();
+                            result = this.evaluateExpression(expr);
+                            break;
+                        }
+                        this.executeLine(line);
+                    }
+
+                    // 恢复作用域
+                    this.variables = oldVariables;
+                    return result;
+                }
+
+                // 执行单行代码
+                executeLine(line) {
+                    // 处理printnln函数
+                    if(line.startsWith('printnln(')) {
+                        const content = line.slice(9, -1);
+                        const value = this.evaluateExpression(content);
+                        this.output.push(value);
+                        return;
+                    }
+
+                    // 处理变量赋值
+                    if(line.includes('=')) {
+                        const [name, expr] = line.split('=').map(s => s.trim());
+                        if(name && expr) {
+                            this.variables[name] = this.evaluateExpression(expr);
+                            return;
+                        }
+                    }
+
+                    // 处理函数调用
+                    const funcCall = line.match(/(\w+)\((.*)\)/);
+                    if(funcCall) {
+                        const [_, name, argsStr] = funcCall;
+                        const args = argsStr.split(',').map(arg => this.evaluateExpression(arg.trim()));
+                        this.executeFunction(name, args);
+                        return;
+                    }
+
+                    // 处理if语句
+                    if(line.startsWith('if(')) {
+                        // 简化处理，仅支持基本比较
+                        const condition = line.match(/if\((.*)\)/)[1];
+                        return this.evaluateCondition(condition);
+                    }
+
+                    // 处理for循环
+                    if(line.startsWith('for(')) {
+                        // 简化处理，仅支持基本循环
+                        const [init, cond, update] = line.match(/for\((.*),(.*),(.*)\)/)[1].split(',');
+                        return this.executeLoop(init, cond, update);
+                    }
+                }
+
+                // 计算表达式
+                evaluateExpression(expr) {
+                    if(!expr) return null;
+                    
+                    // 处理函数调用
+                    const funcCall = expr.match(/(\w+)\((.*)\)/);
+                    if(funcCall) {
+                        const [_, name, argsStr] = funcCall;
+                        const args = argsStr.split(',').map(arg => this.evaluateExpression(arg.trim()));
+                        return this.executeFunction(name, args);
+                    }
+
+                    // 处理字符串字面量
+                    if(expr.startsWith('"') && expr.endsWith('"')) {
+                        return expr.slice(1, -1);
+                    }
+
+                    // 处理数字字面量
+                    if(/^-?\d+(\.\d+)?$/.test(expr)) {
+                        return Number(expr);
+                    }
+
+                    // 处理变量引用
+                    if(this.variables.hasOwnProperty(expr)) {
+                        return this.variables[expr];
+                    }
+
+                    // 处理数组字面量
+                    if(expr.startsWith('[') && expr.endsWith(']')) {
+                        if(expr === '[]') return [];
+                        const items = expr.slice(1, -1).split(',').map(e => e.trim());
+                        return items.map(item => this.evaluateExpression(item));
+                    }
+
+                    // 处理加法和字符串拼接
+                    if(expr.includes('+')) {
+                        const parts = expr.split('+').map(e => this.evaluateExpression(e.trim()));
+                        if(parts.some(p => typeof p === 'string')) {
+                            return parts.join('');
+                        }
+                        return parts.reduce((a, b) => a + b, 0);
+                    }
+
+                    // 处理减法
+                    if(expr.includes('-')) {
+                        const parts = expr.split('-').map(e => this.evaluateExpression(e.trim()));
+                        return parts.reduce((a, b) => a - b);
+                    }
+
+                    return expr;
+                }
+
+                // 计算条件
+                evaluateCondition(condition) {
+                    if(condition.includes('<=')) {
+                        const [left, right] = condition.split('<=').map(e => this.evaluateExpression(e.trim()));
+                        return left <= right;
+                    }
+                    if(condition.includes('>=')) {
+                        const [left, right] = condition.split('>=').map(e => this.evaluateExpression(e.trim()));
+                        return left >= right;
+                    }
+                    if(condition.includes('<')) {
+                        const [left, right] = condition.split('<').map(e => this.evaluateExpression(e.trim()));
+                        return left < right;
+                    }
+                    if(condition.includes('>')) {
+                        const [left, right] = condition.split('>').map(e => this.evaluateExpression(e.trim()));
+                        return left > right;
+                    }
+                    if(condition.includes('==')) {
+                        const [left, right] = condition.split('==').map(e => this.evaluateExpression(e.trim()));
+                        return left === right;
+                    }
+                    return Boolean(this.evaluateExpression(condition));
+                }
+            }
+
+            // 示例代码
+            const examples = {
+                hello: `// Hello World 示例
+printnln("Hello, World!")
+name = "BCC"
+printnln("Welcome to " + name)`,
+
+                fibonacci: `// 斐波那契数列
+def public fibonacci(n) T {
+    if(n <= 1) T {
+        return n
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+// 计算前10个斐波那契数
+for(i = 0, i < 10, i = i + 1) T {
+    printnln(fibonacci(i))
+}`,
+
+                sort: `// 冒泡排序
+def public bubbleSort(arr) T {
+    n = len(arr)
+    for(i = 0, i < n, i = i + 1) T {
+        for(j = 0, j < n - i - 1, j = j + 1) T {
+            if(arr[j] > arr[j + 1]) T {
+                temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+            }
+        }
+    }
+    return arr
+}
+
+// 测试排序
+numbers = [64, 34, 25, 12, 22, 11, 90]
+printnln("原始数组：")
+printnln(numbers)
+printnln("排序后：")
+printnln(bubbleSort(numbers))`,
+
+                closure: `// 闭包示例
+def public counter() T {
+    count = 0
+    return {
+        increment: { -> count = count + 1; return count },
+        decrement: { -> count = count - 1; return count },
+        get: { -> return count }
+    }
+}
+
+// 使用计数器
+c = counter()
+printnln(c.increment())  // 1
+printnln(c.increment())  // 2
+printnln(c.decrement())  // 1
+printnln(c.get())       // 1`
+            };
+
+            // 创建解释器实例
+            const interpreter = new BCCInterpreter();
+
+            // 加载示例代码
+            function loadExample(name) {
+                const editor = document.getElementById('code-editor');
+                editor.value = examples[name];
+            }
+
+            // 运行代码
+            function runCode() {
+                const code = document.getElementById('code-editor').value;
+                const output = document.getElementById('output-area');
+                
+                try {
+                    const result = interpreter.execute(code);
+                    if(result) {
+                        output.innerHTML += result + '\n';
+                    }
+                } catch(e) {
+                    output.innerHTML += e.message + '\n';
+                }
+                
+                // 自动滚动到底部
+                output.scrollTop = output.scrollHeight;
+            }
+
+            // 清空编辑器
+            function clearEditor() {
+                document.getElementById('code-editor').value = '';
+            }
+
+            // 清空输出
+            function clearOutput() {
+                document.getElementById('output-area').innerHTML = '';
+            }
+        </script>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 

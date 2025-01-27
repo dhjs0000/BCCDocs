@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级特性 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="getting_started.html">快速入门</a>
+                <a href="basic_concepts.html">基本概念</a>
+                <a href="examples.html">示例</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC语言高级特性</h1>
+        <p>深入了解BCC语言的高级功能和特性</p>
+    </div>
+
+    <div class="content">
+        <h2>1. 代码块和闭包</h2>
+        <h3>1.1 代码块作为参数</h3>
+        <pre><code>def public processItems(items, processor: BCC.Codeblock) T {
+    for(i = 0, i < len(items), i = i + 1) T {
+        nsreturn processor(arr[i])
+    }
+}
+
+// 使用示例
+items = [1, 2, 3]
+processItems(items, { item -> printnln("Processing: " + item) })</code></pre>
+
+        <h3>1.2 闭包特性</h3>
+        <pre><code>def public counter() T {
+    count = 0
+    return {
+        increment: { -> count = count + 1; return count },
+        get: { -> return count }
+    }
+}
+
+// 使用示例
+c = counter()
+printnln(c.increment())  // 输出: 1
+printnln(c.increment())  // 输出: 2
+printnln(c.get())       // 输出: 2</code></pre>
+
+        <h2>2. 元编程</h2>
+        <h3>2.1 动态方法调用</h3>
+        <pre><code>def public invoke(obj, methodName, args) T {
+    method = obj[methodName]
+    if(method != null) T {
+        return method(args)
+    }
+    return null
+}
+
+// 使用示例
+calculator = {
+    add: { a, b -> return a + b },
+    mul: { a, b -> return a * b }
+}
+
+result = invoke(calculator, "add", [5, 3])
+printnln(result)  // 输出: 8</code></pre>
+
+        <h3>2.2 动态对象创建</h3>
+        <pre><code>def public createObject(properties) T {
+    obj = {}
+    for(key in properties) T {
+        obj[key] = properties[key]
+    }
+    return obj
+}
+
+// 使用示例
+person = createObject({
+    name: "John",
+    age: 30,
+    sayHello: { -> printnln("Hello, I'm " + this.name) }
+})</code></pre>
+
+        <h2>3. 异步编程</h2>
+        <h3>3.1 Promise模式</h3>
+        <pre><code>def public Promise(executor: BCC.Codeblock) T {
+    def public resolve(value) T {
+        this.value = value
+        if(this.onFulfilled != null) T {
+            nsreturn this.onFulfilled(value)
+        }
+    }
+    
+    def public then(onFulfilled: BCC.Codeblock) T {
+        this.onFulfilled = onFulfilled
+        if(this.value != null) T {
+            nsreturn onFulfilled(this.value)
+        }
+        return this
+    }
+    
+    nsreturn executor({ value -> resolve(value) })
+    return this
+}
+
+// 使用示例
+promise = Promise({ resolve -> 
+    // 异步操作
+    resolve("操作完成")
+})
+
+promise.then({ result -> printnln(result) })</code></pre>
+
+        <h3>3.2 并发执行</h3>
+        <pre><code>def public parallel(tasks) {
+    results = []
+    for(task in tasks) {
+        // 启动异步任务
+        nsreturn task
+        results = results + [nsvalue]
+    }
+    return results
+}
+
+// 使用示例
+tasks = [
+    { -> return "Task 1" },
+    { -> return "Task 2" },
+    { -> return "Task 3" }
+]
+
+results = parallel(tasks)
+for(result in results) {
+    println(result)</code></pre>
+
+        <h2>4. 模式匹配</h2>
+        <h3>4.1 类型匹配</h3>
+        <pre><code>def public match(value) {
+    return {
+        case: { type, handler: BCC.Codeblock ->
+            if(typeof(value) == type) {
+                nsreturn handler(value)
+                return true
+            }
+            return false
+        }
+    }
+}
+
+// 使用示例
+value = 42
+matcher = match(value)
+matcher.case("number") { n ->
+    println("Got number: " + n)
+}
+matcher.case("string") { s ->
+    println("Got string: " + s)
+}</code></pre>
+
+        <h3>4.2 值匹配</h3>
+        <pre><code>def public switchValue(value, cases) {
+    for(case in cases) {
+        if(case.value == value) {
+            nsreturn case.handler()
+            return nsvalue
+        }
+    }
+    if(cases.default != null) {
+        nsreturn cases.default()
+        return nsvalue
+    }
+}
+
+// 使用示例
+result = switchValue("hello", {
+    cases: [
+        { value: "hello", handler: { -> return "Hi!" } },
+        { value: "bye", handler: { -> return "Goodbye!" } }
+    ],
+    default: { -> return "Unknown" }
+})</code></pre>
+
+        <h2>5. 反射和自省</h2>
+        <h3>5.1 对象自省</h3>
+        <pre><code>def public inspect(obj) {
+    methods = []
+    properties = []
+    
+    for(key in obj) {
+        if(typeof(obj[key]) == "function") {
+            methods = methods + [key]
+        } else {
+            properties = properties + [key]
+        }
+    }
+    
+    return {
+        methods: methods,
+        properties: properties
+    }
+}
+
+// 使用示例
+person = {
+    name: "John",
+    age: 30,
+    sayHello: { -> println("Hello") }
+}
+
+info = inspect(person)
+println("Methods: " + info.methods)
+println("Properties: " + info.properties)</code></pre>
+
+        <h3>5.2 动态扩展</h3>
+        <pre><code>def public extend(target, source) {
+    for(key in source) {
+        target[key] = source[key]
+    }
+    return target
+}
+
+// 使用示例
+base = {
+    name: "Base Object"
+}
+
+extension = {
+    sayName: { -> println(this.name) }
+}
+
+extend(base, extension)
+base.sayName()  // 输出: Base Object</code></pre>
+
+        <div class="note">
+            <strong>提示：</strong>
+            <ul>
+                <li>高级特性需要深入理解BCC的核心概念</li>
+                <li>建议在实际项目中谨慎使用元编程特性</li>
+                <li>异步编程模式可以提高程序的性能和响应性</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>注意：</strong>
+            <ul>
+                <li>过度使用闭包可能导致内存泄漏</li>
+                <li>动态方法调用可能影响代码的可维护性</li>
+                <li>确保理解异步编程的执行流程</li>
+            </ul>
+        </div>
+
+        <h2>6. 下一步</h2>
+        <p>掌握了高级特性后，您可以：</p>
+        <ul>
+            <li>阅读<a href="best_practices.html">最佳实践</a>了解如何正确使用这些特性</li>
+            <li>查看<a href="examples.html">示例代码</a>学习实际应用场景</li>
+            <li>参考<a href="api_reference.html">API文档</a>了解更多细节</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 

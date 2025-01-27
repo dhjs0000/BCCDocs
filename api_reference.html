@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API参考 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="getting_started.html">快速入门</a>
+                <a href="basic_concepts.html">基本概念</a>
+                <a href="examples.html">示例</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC语言API参考</h1>
+        <p>完整的BCC语言API文档</p>
+    </div>
+
+    <div class="content">
+        <h2>1. 核心函数</h2>
+        <h3>1.1 输入输出</h3>
+        <table class="api-table">
+            <tr>
+                <th>函数名</th>
+                <th>参数</th>
+                <th>返回值</th>
+                <th>描述</th>
+            </tr>
+            <tr>
+                <td>printnln(value)</td>
+                <td>value: 任意类型</td>
+                <td>null</td>
+                <td>打印值并换行</td>
+            </tr>
+            <tr>
+                <td>input()</td>
+                <td>无</td>
+                <td>string</td>
+                <td>从标准输入读取一行文本</td>
+            </tr>
+        </table>
+
+        <h3>1.2 类型操作</h3>
+        <table class="api-table">
+            <tr>
+                <th>函数名</th>
+                <th>参数</th>
+                <th>返回值</th>
+                <th>描述</th>
+            </tr>
+            <tr>
+                <td>typeof(value)</td>
+                <td>value: 任意类型</td>
+                <td>string</td>
+                <td>返回值的类型名称</td>
+            </tr>
+            <tr>
+                <td>len(value)</td>
+                <td>value: string/array</td>
+                <td>number</td>
+                <td>返回字符串或数组的长度</td>
+            </tr>
+        </table>
+
+        <h2>2. 运算符</h2>
+        <h3>2.1 算术运算符</h3>
+        <table class="api-table">
+            <tr>
+                <th>运算符</th>
+                <th>用法</th>
+                <th>描述</th>
+            </tr>
+            <tr>
+                <td>+</td>
+                <td>a + b</td>
+                <td>加法或字符串连接</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>a - b</td>
+                <td>减法</td>
+            </tr>
+            <tr>
+                <td>*</td>
+                <td>a * b</td>
+                <td>乘法</td>
+            </tr>
+            <tr>
+                <td>/</td>
+                <td>a / b</td>
+                <td>除法</td>
+            </tr>
+            <tr>
+                <td>%</td>
+                <td>a % b</td>
+                <td>取余</td>
+            </tr>
+        </table>
+
+        <h2>3. 标准库模块</h2>
+        <h3>3.1 math模块</h3>
+        <table class="api-table">
+            <tr>
+                <th>函数名</th>
+                <th>参数</th>
+                <th>返回值</th>
+                <th>描述</th>
+            </tr>
+            <tr>
+                <td>math.abs(n)</td>
+                <td>n: number</td>
+                <td>number</td>
+                <td>返回绝对值</td>
+            </tr>
+            <tr>
+                <td>math.max(a, b)</td>
+                <td>a: number, b: number</td>
+                <td>number</td>
+                <td>返回两个数中的较大值</td>
+            </tr>
+            <tr>
+                <td>math.min(a, b)</td>
+                <td>a: number, b: number</td>
+                <td>number</td>
+                <td>返回两个数中的较小值</td>
+            </tr>
+        </table>
+
+        <h3>3.2 string模块</h3>
+        <table class="api-table">
+            <tr>
+                <th>函数名</th>
+                <th>参数</th>
+                <th>返回值</th>
+                <th>描述</th>
+            </tr>
+            <tr>
+                <td>string.upper(str)</td>
+                <td>str: string</td>
+                <td>string</td>
+                <td>转换为大写</td>
+            </tr>
+            <tr>
+                <td>string.lower(str)</td>
+                <td>str: string</td>
+                <td>string</td>
+                <td>转换为小写</td>
+            </tr>
+            <tr>
+                <td>string.trim(str)</td>
+                <td>str: string</td>
+                <td>string</td>
+                <td>去除两端空白</td>
+            </tr>
+        </table>
+
+        <h2>4. 错误处理</h2>
+        <h3>4.1 错误类型</h3>
+        <table class="api-table">
+            <tr>
+                <th>错误类型</th>
+                <th>描述</th>
+                <th>示例场景</th>
+            </tr>
+            <tr>
+                <td>SyntaxError</td>
+                <td>语法错误</td>
+                <td>代码格式不正确</td>
+            </tr>
+            <tr>
+                <td>TypeError</td>
+                <td>类型错误</td>
+                <td>操作类型不匹配</td>
+            </tr>
+            <tr>
+                <td>ReferenceError</td>
+                <td>引用错误</td>
+                <td>访问未定义变量</td>
+            </tr>
+            <tr>
+                <td>ImportError</td>
+                <td>导入错误</td>
+                <td>模块导入失败</td>
+            </tr>
+        </table>
+
+        <div class="note">
+            <strong>说明：</strong>
+            <ul>
+                <li>所有内置函数都是全局可用的</li>
+                <li>模块函数需要先导入模块才能使用</li>
+                <li>运算符优先级遵循常规编程语言规则</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>注意：</strong>
+            <ul>
+                <li>除数不能为0</li>
+                <li>数组索引必须是非负整数</li>
+                <li>函数调用参数数量必须匹配</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 

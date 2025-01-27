@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发工具 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="getting_started.html">快速入门</a>
+                <a href="examples.html">示例</a>
+                <a href="api_reference.html">API参考</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC语言开发工具</h1>
+        <p>提升BCC开发效率的工具和插件</p>
+    </div>
+
+    <div class="content">
+        <h2>1. 命令行工具</h2>
+        <h3>1.1 BCC解释器</h3>
+        <pre><code>bcc file.bcs          # 运行BCC文件
+bcc -v               # 显示版本信息
+bcc -h               # 显示帮助信息
+bcc -d file.bcs      # 调试模式运行
+bcc -o file.bcs      # 优化模式运行</code></pre>
+
+        <h3>1.2 REPL环境</h3>
+        <pre><code>bcc                   # 启动REPL环境
+bcc --no-prompt      # 启动无提示符REPL
+bcc --save-history   # 保存REPL历史记录</code></pre>
+
+        <h2>2. 编辑器插件</h2>
+        <h3>2.1 Visual Studio Code</h3>
+        <ul>
+            <li>BCC语言支持
+                <ul>
+                    <li>语法高亮</li>
+                    <li>代码补全</li>
+                    <li>错误检查</li>
+                    <li>代码格式化</li>
+                </ul>
+            </li>
+            <li>安装方法：
+                <ol>
+                    <li>打开VS Code</li>
+                    <li>按Ctrl+P</li>
+                    <li>输入：ext install bcc-lang</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h3>2.2 Sublime Text</h3>
+        <ul>
+            <li>BCC语言包
+                <ul>
+                    <li>语法高亮</li>
+                    <li>代码片段</li>
+                    <li>构建系统</li>
+                </ul>
+            </li>
+            <li>安装方法：
+                <ol>
+                    <li>安装Package Control</li>
+                    <li>搜索"BCC Language"</li>
+                    <li>点击安装</li>
+                </ol>
+            </li>
+        </ul>
+
+        <h2>3. 调试工具</h2>
+        <h3>3.1 BCC调试器</h3>
+        <pre><code>bcc debug file.bcs    # 启动调试器
+help                 # 显示调试命令
+break 10            # 在第10行设置断点
+continue            # 继续执行
+step                # 单步执行
+print x             # 打印变量x的值
+quit                # 退出调试器</code></pre>
+
+        <h3>3.2 性能分析器</h3>
+        <pre><code>bcc profile file.bcs  # 运行性能分析
+bcc profile --stats # 显示详细统计
+bcc profile --graph # 生成调用图</code></pre>
+
+        <h2>4. 构建工具</h2>
+        <h3>4.1 项目模板</h3>
+        <pre><code>bcc init project     # 创建新项目
+bcc init lib        # 创建库项目
+bcc init test       # 创建测试项目</code></pre>
+
+        <h3>4.2 依赖管理</h3>
+        <pre><code>bcc install pkg      # 安装依赖
+bcc update          # 更新依赖
+bcc remove pkg      # 移除依赖</code></pre>
+
+        <h2>5. 代码质量工具</h2>
+        <h3>5.1 代码检查器</h3>
+        <pre><code>bcc lint file.bcs    # 检查代码风格
+bcc lint --fix      # 自动修复问题
+bcc lint --config   # 使用配置文件</code></pre>
+
+        <h3>5.2 测试工具</h3>
+        <pre><code>bcc test            # 运行所有测试
+bcc test file.bcs   # 运行指定测试
+bcc test --coverage # 生成覆盖率报告</code></pre>
+
+        <div class="note">
+            <strong>提示：</strong>
+            <ul>
+                <li>所有工具都可以通过pip安装：pip install bcc-tools</li>
+                <li>编辑器插件可以从各自的插件市场安装</li>
+                <li>调试工具需要Python 3.6+环境</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>注意：</strong>
+            <ul>
+                <li>某些工具可能需要额外的系统依赖</li>
+                <li>性能分析可能会降低程序运行速度</li>
+                <li>自动修复可能需要手动确认</li>
+            </ul>
+        </div>
+
+        <h2>6. 下一步</h2>
+        <p>配置好开发环境后，您可以：</p>
+        <ul>
+            <li>查看<a href="examples.html">示例代码</a>了解实际应用</li>
+            <li>阅读<a href="best_practices.html">最佳实践</a>提高代码质量</li>
+            <li>探索<a href="advanced_features.html">高级特性</a>掌握更多功能</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 

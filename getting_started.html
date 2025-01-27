@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCC快速入门 - BCC语言文档</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <span class="icon">←</span>
+                返回文档中心
+            </a>
+            <div class="nav-links">
+                <a href="installation.html">安装指南</a>
+                <a href="basic_concepts.html">基本概念</a>
+                <a href="examples.html">示例</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>BCC语言快速入门</h1>
+        <p>15分钟快速上手BCC编程</p>
+    </div>
+
+    <div class="content">
+        <h2>1. 第一个BCC程序</h2>
+        <p>让我们从一个简单的"Hello, World!"程序开始：</p>
+        <pre><code>// hello.bcs
+printnln("Hello, World!")
+printnln("Welcome to BCC!")</code></pre>
+        
+        <div class="note">
+            <strong>提示：</strong> BCC源代码文件使用 .bcs 扩展名。
+        </div>
+
+        <h2>2. 基本语法</h2>
+        <h3>2.1 变量和赋值</h3>
+        <pre><code>// 变量赋值
+name = "BCC"
+age = 25
+price = 99.9
+
+// 打印变量
+printnln("Name: " + name)</code></pre>
+
+        <h3>2.2 条件语句</h3>
+        <pre><code>// if 语句
+score = 85
+if(score > 60) T {
+    printnln("及格")
+}</code></pre>
+
+        <h3>2.3 循环</h3>
+        <pre><code>// for 循环
+for(i = 0, i < 5, i = i + 1) T {
+    printnln(i)
+}
+
+// while 循环
+x = 0
+while(x < 3) T {
+    printnln(x)
+    x = x + 1
+}</code></pre>
+
+        <h2>3. 函数定义</h2>
+        <pre><code>// 定义公共函数
+def public add(a, b) T {
+    return a + b
+}
+
+// 使用函数
+result = add(5, 3)
+printnln(result)</code></pre>
+
+        <div class="note">
+            <strong>说明：</strong> BCC中的函数必须指定 public 或 private 访问修饰符。
+        </div>
+
+        <h2>4. 代码块</h2>
+        <pre><code>// 定义接受代码块的函数
+def public repeat(times, block: BCC.Codeblock) T {
+    for(i = 0, i < times, i = i + 1) T {
+        nsreturn block
+    }
+}
+
+// 使用代码块
+repeat(3, { -> printnln("Hello!") })</code></pre>
+
+        <h2>5. 下一步</h2>
+        <p>现在您已经了解了BCC的基础知识，您可以：</p>
+        <ul>
+            <li>查看<a href="examples.html">更多示例</a>了解BCC的实际应用</li>
+            <li>阅读<a href="basic_concepts.html">基本概念</a>深入理解BCC的特性</li>
+            <li>探索<a href="advanced_features.html">高级特性</a>掌握BCC的强大功能</li>
+        </ul>
+
+        <div class="warning">
+            <strong>注意：</strong>
+            <ul>
+                <li>确保代码块使用大括号 {} 包围</li>
+                <li>条件语句的条件必须用括号 () 包围</li>
+                <li>字符串必须使用双引号 " " 包围</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>BCC语言 v1.0.0 | <a href="changelog.html">更新日志</a></p>
+        <p>© 2024 BCC Language. All rights reserved.</p>
+    </div>
+</body>
+</html> 
